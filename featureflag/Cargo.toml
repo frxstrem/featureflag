@@ -16,5 +16,9 @@ futures-core = { version = "0.3.31", optional = true }
 inventory = { version = "0.3.20", optional = true }
 thread_local = "1.1.8"
 
+[dev-dependencies]
+featureflag = { path = ".", features = ["feature-registry", "futures"] }
+featureflag-test = { path = "../featureflag-test" }
+
 [lints]
 workspace = true
