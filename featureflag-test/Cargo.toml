@@ -1,0 +1,11 @@
+[package]
+name = "featureflag-test"
+
+edition = "2024"
+version = "0.0.1"
+
+[dependencies]
+featureflag = { version = "0.0.1", path = "../featureflag" }
+
+[lints]
+workspace = true

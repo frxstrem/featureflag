@@ -18,6 +18,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "featureflag-test"
+version = "0.0.1"
+dependencies = [
+ "featureflag",
+]
+
+[[package]]
 name = "futures-core"
 version = "0.3.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
