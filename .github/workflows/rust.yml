@@ -1,0 +1,42 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        features:
+        - ''
+        - 'featureflag/futures'
+        - 'all'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      env:
+        features: ${{ matrix.features }}
+      run: |
+        if [[ "$features" == "all" ]]; then
+          cargo build --all --all-targets --all-features
+        else
+          cargo build --all --all-targets --no-default-features --features "$features"
+        fi
+    - name: Run tests
+      env:
+        features: ${{ matrix.features }}
+      run: |
+        if [[ "$features" == "all" ]]; then
+          cargo test --all --all-targets --all-features
+        else
+          cargo test --all --all-targets --no-default-features --features "$features"
+        fi
