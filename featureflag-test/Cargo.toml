@@ -6,6 +6,7 @@ version = "0.0.1"
 
 [dependencies]
 featureflag = { version = "0.0.1", path = "../featureflag" }
+featureflag-test-macros = { version = "0.0.1", path = "../featureflag-test-macros" }
 
 [lints]
 workspace = true

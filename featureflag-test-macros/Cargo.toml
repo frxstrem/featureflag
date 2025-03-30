@@ -1,0 +1,21 @@
+[package]
+name = "featureflag-test-macros"
+
+edition = "2024"
+version = "0.0.1"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro-crate = "3.3.0"
+proc-macro2 = "1.0.94"
+quote = "1.0.40"
+syn = { version = "2.0.100", features = ["full", "visit-mut"] }
+
+[dev-dependencies]
+featureflag = { version = "0.0.1", path = "../featureflag" }
+featureflag-test = { version = "0.0.1", path = "../featureflag-test" }
+
+[lints]
+workspace = true

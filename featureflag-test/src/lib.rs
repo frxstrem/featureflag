@@ -2,6 +2,8 @@ use std::{collections::HashMap, ops::Deref, sync::RwLock};
 
 use featureflag::{Context, Evaluator, context::ContextRef, fields::Fields};
 
+pub use featureflag_test_macros::*;
+
 pub struct TestEvaluator {
     features: RwLock<HashMap<String, Box<dyn TestFeature>>>,
 }

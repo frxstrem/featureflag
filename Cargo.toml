@@ -1,5 +1,5 @@
 [workspace]
-members = ["featureflag", "featureflag-test"]
+members = ["featureflag", "featureflag-test", "featureflag-test-macros"]
 resolver = "2"
 
 [workspace.lints.rust]
