@@ -1,24 +1,30 @@
+//! Extensions for storing custom data in [`Context`](crate::Context)s.
+
 use std::{
     any::{Any, TypeId},
     collections::HashMap,
     hash::{BuildHasherDefault, Hasher},
 };
 
+/// Type map for storing custom data in a [`Context`](crate::Context).
 pub struct Extensions {
     map: Option<AnyMap>,
 }
 
 impl Extensions {
+    /// Create an new empty [`Extensions`] instance.
     pub const fn new() -> Extensions {
         Extensions { map: None }
     }
 
+    /// Check if the [`Extensions`] instance contains data of the given type.
     pub fn has<T: Send + Sync + 'static>(&self) -> bool {
         self.map
             .as_ref()
             .is_some_and(|map| map.contains_key(&TypeId::of::<T>()))
     }
 
+    /// Get a reference to the data of the given type, if it exists.
     pub fn get<T: Send + Sync + 'static>(&self) -> Option<&T> {
         self.map
             .as_ref()?
@@ -26,6 +32,7 @@ impl Extensions {
             .and_then(|any| any.downcast_ref::<T>())
     }
 
+    /// Get a mutable reference to the data of the given type, if it exists.
     pub fn get_mut<T: Send + Sync + 'static>(&mut self) -> Option<&mut T> {
         self.map
             .as_mut()?
@@ -33,6 +40,9 @@ impl Extensions {
             .and_then(|any| any.downcast_mut::<T>())
     }
 
+    /// Insert data of the given type into the [`Extensions`] instance.
+    ///
+    /// If data of the same type already exists, it will be replaced and returned.
     pub fn insert<T: Send + Sync + 'static>(&mut self, value: T) -> Option<T> {
         self.map
             .get_or_insert_default()
@@ -41,6 +51,9 @@ impl Extensions {
             .map(|boxed| *boxed)
     }
 
+    /// Remove data of the given type from the [`Extensions`] instance.
+    ///
+    /// If data of the given type exists, it will be removed and returned.
     pub fn remove<T: Send + Sync + 'static>(&mut self) -> Option<T> {
         self.map
             .as_mut()?

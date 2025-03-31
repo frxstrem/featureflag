@@ -1,3 +1,5 @@
+#![allow(missing_docs)]
+
 use featureflag::{Context, context, evaluator::with_default};
 use featureflag_test::{TestContextExt, TestEvaluator};
 

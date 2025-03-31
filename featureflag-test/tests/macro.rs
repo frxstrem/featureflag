@@ -1,4 +1,9 @@
-#![allow(clippy::needless_lifetimes, clippy::extra_unused_lifetimes, dead_code)]
+#![allow(
+    dead_code,
+    missing_docs,
+    clippy::needless_lifetimes,
+    clippy::extra_unused_lifetimes
+)]
 
 use std::marker::PhantomData;
 

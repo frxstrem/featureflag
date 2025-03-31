@@ -1,8 +1,10 @@
 [package]
 name = "featureflag"
-
-edition = "2024"
 version = "0.0.1"
+
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
 
 [features]
 default = []
@@ -22,3 +24,6 @@ featureflag-test = { path = "../featureflag-test" }
 
 [lints]
 workspace = true
+
+[package.metadata.docs.rs]
+rustc-args = ["--all-features"]

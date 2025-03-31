@@ -1,3 +1,5 @@
+#![allow(missing_docs)]
+
 use featureflag::{Feature, evaluator::with_default};
 use featureflag_test::TestEvaluator;
 

@@ -1,3 +1,5 @@
+//! This module provides utilities for wrapping types with a [`Context`] or [`Evaluator`].
+
 use std::{pin::Pin, task::Poll};
 
 use crate::{
@@ -5,7 +7,16 @@ use crate::{
     evaluator::{EvaluatorRef, NoEvaluator, get_default, with_default_no_registration},
 };
 
+/// Extension trait for all types.
 pub trait AnyExt {
+    /// Wraps the given value with a [`Context`].
+    ///
+    /// If `Self` is a future, then `WrapContext<Self>` is also a future that
+    /// will be run within the given context.
+    ///
+    /// If `Self` is a stream and the `futures` feature is enabled, then
+    /// `WrapContext<Self>` is also a stream that will be run within the
+    /// given context.
     fn wrap_context(self, context: Context) -> WrapContext<Self>
     where
         Self: Sized,
@@ -16,6 +27,9 @@ pub trait AnyExt {
         }
     }
 
+    /// Wraps the given value with the current [`Context`].
+    ///
+    /// See [`AnyExt::wrap_context`] and [`Context::current`] for more details.
     fn inherit_context(self) -> WrapContext<Self>
     where
         Self: Sized,
@@ -23,6 +37,16 @@ pub trait AnyExt {
         self.wrap_context(Context::current_or_root())
     }
 
+    /// Wraps the given value with an [`Evaluator`].
+    ///
+    /// If `Self` is a future, then `WrapEvaluator<Self>` is also a future that
+    /// will be run within the given evaluator, as if called within
+    /// [`with_default`](crate::evaluator::with_default).
+    ///
+    /// If `Self` is a stream and the `futures` feature is enabled, then
+    /// `WrapEvaluator<Self>` is also a stream that will be run within the
+    /// given evaluator, as if called within
+    /// [`with_default`](crate::evaluator::with_default).
     fn wrap_evaluator(self, evaluator: EvaluatorRef) -> WrapEvaluator<Self>
     where
         Self: Sized,
@@ -34,6 +58,9 @@ pub trait AnyExt {
         }
     }
 
+    /// Wraps the given value with the current [`Evaluator`].
+    ///
+    /// See [`AnyExt::wrap_evaluator`] and [`get_default`] for more details.
     fn inherit_evaluator(self) -> WrapEvaluator<Self>
     where
         Self: Sized,
@@ -48,6 +75,9 @@ pub trait AnyExt {
     }
 }
 
+/// Wraps a type with a [`Context`].
+///
+/// See [`AnyExt::wrap_context`] for more details.
 pub struct WrapContext<T: ?Sized> {
     context: Context,
     inner: T,
@@ -80,6 +110,9 @@ impl<S: ?Sized + futures_core::Stream> futures_core::Stream for WrapContext<S> {
     }
 }
 
+/// Wraps a type with an [`Evaluator`].
+///
+/// See [`AnyExt::wrap_evaluator`] for more details.
 pub struct WrapEvaluator<T: ?Sized> {
     evaluator: EvaluatorRef,
     registered: bool,

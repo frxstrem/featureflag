@@ -16,10 +16,21 @@ thread_local! {
     static TASK_EVALUATOR: RefCell<Option<EvaluatorRef>> = const { RefCell::new(None) };
 }
 
+/// Set the global evaluator.
+///
+/// # Panics
+///
+/// Panics if the global evaluator is already set.
+/// For a non-panicking version, use [`try_set_global_default`].
 pub fn set_global_default<E: Evaluator + Send + Sync + 'static>(evaluator: E) {
     try_set_global_default(evaluator).expect("failed to set global default");
 }
 
+/// Set the global evaluator.
+///
+/// # Errors
+///
+/// Returns an error if the global evaluator is already set.
 pub fn try_set_global_default<E: Evaluator + Send + Sync + 'static>(
     evaluator: E,
 ) -> Result<(), SetGlobalDefaultError> {
@@ -37,10 +48,25 @@ pub fn try_set_global_default<E: Evaluator + Send + Sync + 'static>(
     }
 }
 
+/// Set the thread evaluator.
+///
+/// This function overrides the global evaluator set by [`set_global_default`].
+///
+/// # Panics
+///
+/// Panics if the thread evaluator is already set.
+/// For a non-panicking version, use [`try_set_thread_default`].
 pub fn set_thread_default<E: Evaluator + Send + Sync + 'static>(evaluator: E) {
     try_set_thread_default(evaluator).expect("failed to set thread default");
 }
 
+/// Set the thread evaluator.
+///
+/// This function overrides the global evaluator set by [`set_global_default`].
+///
+/// # Errors
+///
+/// Returns an error if the thread evaluator is already set.
 pub fn try_set_thread_default<E: Evaluator + Send + Sync + 'static>(
     evaluator: E,
 ) -> Result<(), SetThreadDefaultError> {
@@ -60,6 +86,10 @@ pub fn try_set_thread_default<E: Evaluator + Send + Sync + 'static>(
     })
 }
 
+/// Set the evaluator inside the given closure.
+///
+/// This function overrides the thread evaluator set by [`set_global_default`]
+/// and [`set_thread_default`].
 pub fn with_default<E: Evaluator + Send + Sync + 'static, F: FnOnce() -> R, R>(
     evaluator: E,
     f: F,
@@ -68,6 +98,8 @@ pub fn with_default<E: Evaluator + Send + Sync + 'static, F: FnOnce() -> R, R>(
     with_default_no_registration(evaluator.into_ref(), f)
 }
 
+/// Set the evaluator inside the given closure, without calling
+/// [`Evaluator::on_registration`].
 pub(crate) fn with_default_no_registration<F: FnOnce() -> R, R>(
     evaluator: EvaluatorRef,
     f: F,
@@ -84,6 +116,12 @@ pub(crate) fn with_default_no_registration<F: FnOnce() -> R, R>(
     }
 }
 
+/// Get the default evaluator currently in scope.
+///
+/// This function will use the first of the following:
+/// 1. The evaluator set by [`with_default`].
+/// 2. The evaluator set by [`set_thread_default`].
+/// 3. The evaluator set by [`set_global_default`].
 pub fn get_default<F: FnOnce(Option<&EvaluatorRef>) -> R, R>(f: F) -> R {
     let evaluator = TASK_EVALUATOR
         .with_borrow(|evaluator| evaluator.clone().map(Cow::Owned))
@@ -93,6 +131,10 @@ pub fn get_default<F: FnOnce(Option<&EvaluatorRef>) -> R, R>(f: F) -> R {
     f(evaluator.as_deref())
 }
 
+/// Error returned when trying to set the global evaluator
+/// when one is already set.
+///
+/// This error is returned by [`try_set_global_default`].
 #[derive(Debug)]
 pub struct SetGlobalDefaultError {
     _private: (),
@@ -106,6 +148,10 @@ impl fmt::Display for SetGlobalDefaultError {
 
 impl std::error::Error for SetGlobalDefaultError {}
 
+/// Error returned when trying to set the thread evaluator
+/// when one is already set.
+///
+/// This error is returned by [`try_set_thread_default`].
 #[derive(Debug)]
 pub struct SetThreadDefaultError {
     _private: (),

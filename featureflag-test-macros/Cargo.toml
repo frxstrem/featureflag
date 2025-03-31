@@ -1,8 +1,10 @@
 [package]
 name = "featureflag-test-macros"
-
-edition = "2024"
 version = "0.0.1"
+
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
 
 [lib]
 proc-macro = true
@@ -19,3 +21,6 @@ featureflag-test = { version = "0.0.1", path = "../featureflag-test" }
 
 [lints]
 workspace = true
+
+[package.metadata.docs.rs]
+rustc-args = ["--all-features"]
