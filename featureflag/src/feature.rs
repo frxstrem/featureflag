@@ -135,7 +135,7 @@ macro_rules! is_enabled {
 
 // Allow references from doc comments before the macro definition.
 #[allow(unused_imports)]
-use crate::{is_enabled, feature};
+use crate::{feature, is_enabled};
 
 #[cfg(feature = "feature-registry")]
 #[cfg_attr(docsrs, doc(cfg(feature = "feature-registry")))]

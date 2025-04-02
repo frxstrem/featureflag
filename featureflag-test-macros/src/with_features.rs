@@ -1,6 +1,5 @@
-use proc_macro_crate::FoundCrate;
-use proc_macro2::{Span, TokenStream};
-use quote::{ToTokens, format_ident, quote, quote_spanned};
+use proc_macro2::TokenStream;
+use quote::{ToTokens, format_ident, quote_spanned};
 use syn::{
     Expr, ExprLit, Ident, Item, Lit, LitBool, LitStr, Token,
     parse::{Parse, ParseStream},
@@ -8,6 +7,8 @@ use syn::{
     punctuated::Punctuated,
     spanned::Spanned,
 };
+
+use crate::utils::crate_name;
 
 pub fn with_features(args: TestFeaturesArgs, input: Item) -> syn::Result<impl ToTokens> {
     let Item::Fn(mut input) = input else {
@@ -19,14 +20,8 @@ pub fn with_features(args: TestFeaturesArgs, input: Item) -> syn::Result<impl To
 
     let evaluator = format_ident!("__evaluator");
 
-    let featureflag = match proc_macro_crate::crate_name("featureflag").unwrap() {
-        FoundCrate::Itself => quote! { crate },
-        FoundCrate::Name(name) => Ident::new(&name, Span::call_site()).into_token_stream(),
-    };
-    let featureflag_test = match proc_macro_crate::crate_name("featureflag-test").unwrap() {
-        FoundCrate::Itself => quote! { crate },
-        FoundCrate::Name(name) => Ident::new(&name, Span::call_site()).into_token_stream(),
-    };
+    let featureflag = crate_name("featureflag");
+    let featureflag_test = crate_name("featureflag-test");
 
     let features = args
         .test_features
@@ -143,12 +138,12 @@ mod tests {
             #[foo]
             fn test<'a, T: Foo, U, const V: usize>(&mut self, n: i32, Foo(x): Foo) {
                 {
-                    let mut __evaluator = featureflag_test::TestEvaluator::new();
+                    let mut __evaluator = ::featureflag_test::TestEvaluator::new();
                     __evaluator.set_feature("enabled", true);
                     __evaluator.set_feature("disabled", false);
                     __evaluator.set_feature("implicit", true);
                     __evaluator.set_feature("custom", custom);
-                    featureflag::evaluator::set_thread_default(__evaluator);
+                    ::featureflag::evaluator::set_thread_default(__evaluator);
                 };
 
                 self.beep_boop(n, x)

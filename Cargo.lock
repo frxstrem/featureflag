@@ -37,8 +37,6 @@ dependencies = [
 name = "featureflag-test-macros"
 version = "0.0.1"
 dependencies = [
- "featureflag",
- "featureflag-test",
  "proc-macro-crate",
  "proc-macro2",
  "quote",
