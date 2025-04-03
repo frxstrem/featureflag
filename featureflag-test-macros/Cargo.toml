@@ -20,6 +20,3 @@ syn = { version = "2.0.100", features = ["full", "visit-mut"] }
 
 [lints]
 workspace = true
-
-[package.metadata.docs.rs]
-rustc-args = ["--all-features"]

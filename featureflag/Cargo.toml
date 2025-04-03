@@ -27,6 +27,3 @@ featureflag-test = { path = "../featureflag-test" }
 
 [lints]
 workspace = true
-
-[package.metadata.docs.rs]
-rustc-args = ["--all-features"]
