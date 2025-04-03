@@ -2,7 +2,7 @@
 name = "featureflag-test-macros"
 
 description = "Test macros for featureflag crate"
-version = "0.0.1"
+version = "0.0.2"
 
 edition.workspace = true
 license.workspace = true
