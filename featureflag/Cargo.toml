@@ -26,3 +26,6 @@ featureflag-test = { path = "../featureflag-test" }
 
 [lints]
 workspace = true
+
+[package.metadata.docs.rs]
+all-features = true

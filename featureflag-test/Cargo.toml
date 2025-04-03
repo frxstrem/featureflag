@@ -15,3 +15,6 @@ featureflag-test-macros = { version = "0.0.2", path = "../featureflag-test-macro
 
 [lints]
 workspace = true
+
+[package.metadata.docs.rs]
+all-features = true
